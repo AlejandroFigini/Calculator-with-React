@@ -58,14 +58,14 @@ export function Screen({ expression, result, ans, changeMode, mode, history, upd
             [scrollbar-color:transparent_transparent]
             relative
             hover:[scrollbar-color:#626060_#00000000]
-            min-h-[6rem]
+            min-h-[4vw]
           "
         >
           {/* change location of both h2 */}
           <motion.h2
             className="absolute"
             animate={{
-              y: animateCondition ? 30 : 0,
+              y: animateCondition ? 20 : 0,
               color: animateCondition ? '#ffffff' : '#aca3a3',
               fontSize: animateCondition ? '1vw' : '.6vw',
             }}
@@ -76,7 +76,7 @@ export function Screen({ expression, result, ans, changeMode, mode, history, upd
           <motion.h2
             className="absolute"
             animate={{
-              y: animateCondition ? 0 : 30,
+              y: animateCondition ? 0 : 20,
               color: animateCondition ? '#aca3a3' : '#ffffff',
               fontSize: animateCondition ? '.6vw' : '1vw',
             }}

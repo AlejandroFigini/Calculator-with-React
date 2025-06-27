@@ -21,23 +21,28 @@ export function History({ history, updateScreenFromHistory }) {
             ${Open ? 'text-[#186064]' : 'text-white'}
           `}
         />
-        <div
+        <div        
           className={`
             absolute 
             bg-[#0b0c0c]       
-            top-[-0.7vw] 
+            top-[-0.5vw] 
+            left-[-5.5vw] 
             [scrollbar-width:none] 
-            h-[7.9vw] 
+            max-h-[7vw]	
             w-[7vw] 
             overflow-y-scroll 
             overflow-x-hidden 
-            rounded-r-[0.5vw] 
+            rounded-[0.2vw]             
             transition-all 
             duration-300 
             ease-in-out 
             ${Open ? 'translate-x-[7.2vw] opacity-100' : 'opacity-0 translate-x-full'}
           `}
         >
+          <p className="p-2 sticky top-0 bg-[#0b0c0c] z-10 text-[.6vw]">
+   {history.length} operation{history.length !== 1 ? 's' : ''}
+</p>
+
           {history.map((entry, index) => (
             <h3
               className="
@@ -46,7 +51,7 @@ export function History({ history, updateScreenFromHistory }) {
                 duration-100 
                 ease-in-out 
                 px-[0.5vw] 
-                py-[0.2vw]
+                py-[0.3vw]
                 hover:bg-[#186064] 
                 hover:cursor-pointer 
                 hover:scale-[1.05] 
