@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 
-export function BlinkingCurson({ result }) {
-  if (result !== 0) return null; // hide cursor if there is already a result
+export function BlinkingCurson({ completeOperation }) {
+  if (completeOperation) return null; // hide cursor if there is already a result
 
   return (
     <motion.span

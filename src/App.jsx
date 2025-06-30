@@ -9,6 +9,8 @@ export function App() {
   const [expression, setExpression] = useState('');
   const [result, setResult] = useState(0);
   const [ans, setAns] = useState(0);
+  const [completeOperation, setcompleteOperation] = useState(false);
+
   const [open, setOpen] = useState(0); // count open parentheses
   const [mode, setMode] = useState('Standar');
   const [history, setHistory] = useState([]);
@@ -55,6 +57,7 @@ export function App() {
 
   // Button functions
   function clearScreen() {
+    setcompleteOperation(false);
     setExpression('');
     setResult(0);
     setOpen(0);
@@ -70,72 +73,82 @@ export function App() {
   }
 
   function updateScreen(value) {
-    setExpression((prev) => {
-      let formattedValue = value;
+  setExpression((prev) => {
+    let formattedValue = value;
 
-      if (/^[^0-9.]$/.test(value)) {
-        formattedValue = ` ${value} `; // add space if the input is a symbol
+    // add space if the input is a symbol
+    if (/^[^0-9.]$/.test(value)) {
+      formattedValue = ` ${value} `; 
+    }
+
+    // always show = in the end of the expression
+    if (value === '=') { 
+      setOpen(0);
+      return prev + formattedValue;
+    }
+
+    // Start a new operation keeping the last result
+    if (completeOperation) { 
+      setcompleteOperation(false);
+      setOpen(0);
+      return ans + formattedValue;
+    }
+
+    // Only update the parentheses counter
+    if (value === ')') { 
+      return prev;
+    }
+
+    // Determine the position of the input based on open parentheses
+    if (open > 0) { 
+      return (
+        prev.slice(0, -open) + formattedValue + prev.slice(-open)
+      );
+    }
+
+    return prev + formattedValue;
+  });
+}
+
+
+function deleteCharScreen() {
+  setExpression((prev) => {
+    const emptyFuncOrParenRegex = /(log|ln|cos|sen|tan|√|Rnd|abs)?\(\)/g;
+    const match = prev.match(/(\)+)$/);
+    const count = match ? match[0].length : 0;
+
+    function EmptyFuncOrParen() {
+      setOpen((prevOpen) => prevOpen - 1);
+      return prev.replace(emptyFuncOrParenRegex, '');
+    }
+
+    function InsideParentheses() {
+      if (prev.slice(0, -count).endsWith(' ')) {
+        return prev.slice(0, -count - 3) + prev.slice(-count);
       }
+      return prev.slice(0, -count - 1) + prev.slice(-count);
+    }
 
-      switch (true) {
-        case value === '=': // always show = in the end of the expression
-          setOpen(0);
-          return prev + formattedValue;
-
-        case result !== 0: // Start a new operation keeping the last result
-          setResult(0);
-          setOpen(0);
-          return ans + formattedValue;
-
-        case value === ')': // Only update the parentheses counter
-          return prev;
-
-        case open > 0: // Determine the position of the input based on open parentheses
-          return prev.slice(0, -open) + formattedValue + prev.slice(-open);
-
-        default:
-          return prev + formattedValue;
+    function OutsideParentheses() {
+      if (prev.endsWith(' ')) {
+        return prev.slice(0, -3);
       }
-    });
-  }
+      return prev.slice(0, -1);
+    }
 
-  function deleteCharScreen() {
-    setExpression((prev) => {
-      let newExp = prev;
+     // delete empty parentheses or functions
+    if (emptyFuncOrParenRegex.test(prev)) {
+      return EmptyFuncOrParen();
+    }
+    // inside parentheses
+    if (count > 0) {
+      return InsideParentheses();
+    }
+    // outside parentheses, default return
+    return OutsideParentheses();
+  });
+}
 
-      const emptyFuncOrParensRegex = /(log|ln|cos|sen|tan|√|Rnd|abs)?\(\)/g;
-
-      // delete empty parentheses or functions
-      if (emptyFuncOrParensRegex.test(newExp)) {
-        setOpen((prevOpen) => prevOpen - 1);
-        newExp = newExp.replace(emptyFuncOrParensRegex, '');
-      }
-
-      const match = newExp.match(/(\)+)$/);
-      const count = match ? match[0].length : 0;
-      setOpen(count);
-
-      // inside parentheses
-      if (count > 0) {
-        if (newExp.slice(0, -count).endsWith(' ')) {
-          newExp = newExp.slice(0, -count - 3) + newExp.slice(-count);
-        } else {
-          newExp = newExp.slice(0, -count - 1) + newExp.slice(-count);
-        }
-      }
-
-      // outside parentheses
-      if (count === 0) {
-        if (newExp.endsWith(' ')) {
-          newExp = newExp.slice(0, -3);
-        } else {
-          newExp = newExp.slice(0, -1);
-        }
-      }
-
-      return newExp;
-    });
-  }
 
   function parseExpression(value) {
     return value
@@ -151,9 +164,10 @@ export function App() {
   function calculateResult() {
     try {
       const result = evaluate(parseExpression(expression));
+      updateScreen('=');
       setResult(result);
       setHistory((prev) => [...prev, expression]);
-      updateScreen('=');
+      setcompleteOperation(true);
     } catch {
       setResult('Syntax Error');
     }
@@ -168,13 +182,14 @@ export function App() {
     setMode(value);
   }
 
+
   // update ans value if the result is correct
   useEffect(() => {
-    if (![0, 'Syntax Error'].includes(result)) {
+    if (!['Syntax Error'].includes(result)) {
       setAns(result);
     }
   }, [result]);
-
+  
   return (
     <>
       <Screen
@@ -186,6 +201,7 @@ export function App() {
         changeMode={changeMode}
         mode={mode}
         open={open}
+        completeOperation={completeOperation}
       />
       <div className="flex justify-center">
         <CalculatorButtons

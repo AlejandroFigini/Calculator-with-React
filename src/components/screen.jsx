@@ -5,31 +5,38 @@ import { History } from './History';
 import { CalculatorMode } from './CalculatorMode';
 import { BlinkingCurson } from './BlinkingCursor';
 
-export function Screen({ expression, result, ans, changeMode, mode, history, updateScreenFromHistory, open }) {
+export function Screen({ expression, result, ans, changeMode, mode, history, updateScreenFromHistory, open, completeOperation }) {
   const inputRef = useRef(null);
-  const displayUp = result === 0 ? 'Ans = ' + ans : result;
-  const [displayDown, setdisplayDown] = useState(expression);
-  const animateCondition = result !== 0;
+  const [displayUp, setdisplayUp] = useState('Ans = ' + ans)
+  const [displayDown,setdisplayDown] = useState(expression);
+
+
+
 
   useEffect(() => {
-    // Put blinking cursor inside parentheses
-    if (open > 0) {
-      const index = expression.length - open;
-      setdisplayDown(
+  setdisplayUp(completeOperation ? result : 'Ans = ' + ans);
+}, [completeOperation]);
+
+  
+// Put blinking cursor inside parentheses
+  useEffect(() => {
+    const index = expression.length - open;
+    setdisplayDown(
+    <>
+      {open > 0 ? (
         <>
           {expression.slice(0, index)}
-          <BlinkingCurson result={result} />
+          <BlinkingCurson completeOperation={completeOperation} />
           <span style={{ color: '#696464' }}>{expression.slice(index)}</span>
         </>
-      );
-    } else {
-      setdisplayDown(
+      ) : (
         <>
           {expression}
-          <BlinkingCurson result={result} />
+          <BlinkingCurson completeOperation={completeOperation} />
         </>
-      );
-    }
+      )}
+    </>
+  );
   }, [expression, open]);
 
   // Automatically move to the end of the expression
@@ -65,9 +72,9 @@ export function Screen({ expression, result, ans, changeMode, mode, history, upd
           <motion.h2
             className="absolute"
             animate={{
-              y: animateCondition ? 20 : 0,
-              color: animateCondition ? '#ffffff' : '#aca3a3',
-              fontSize: animateCondition ? '1vw' : '.6vw',
+              y: completeOperation ? 20 : 0,
+              color: completeOperation ? '#ffffff' : '#aca3a3',
+              fontSize: completeOperation ? '1vw' : '.6vw',
             }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
           >
@@ -76,9 +83,9 @@ export function Screen({ expression, result, ans, changeMode, mode, history, upd
           <motion.h2
             className="absolute"
             animate={{
-              y: animateCondition ? 0 : 20,
-              color: animateCondition ? '#aca3a3' : '#ffffff',
-              fontSize: animateCondition ? '.6vw' : '1vw',
+              y: completeOperation ? 0 : 20,
+              color: completeOperation ? '#aca3a3' : '#ffffff',
+              fontSize: completeOperation ? '.6vw' : '1vw',
             }}
             transition={{ duration: 0.3, ease: 'easeOut' }}
           >
