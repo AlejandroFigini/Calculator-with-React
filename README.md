@@ -14,7 +14,7 @@ interactive calculator built with **React**, featuring both Standard and Scienti
 
 ##  Technologies Used
 
-- **React** (Hooks: `useState`, `useEffect`)
+- **React** (Hooks: `useState`, `useEffect`,`useRef`)
 - **Framer Motion** for smooth animations
 - **FontAwesome** for icons
 - **mathjs** for expression evaluation
