@@ -1,19 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useContext } from 'react';
 import { evaluate } from 'mathjs';
 
 // Components
-import { Screen } from './components/screen';
+import { Screen } from './components/Screen';
 import { CalculatorButtons } from './components/CalculatorButtons';
-
+// Context
+import { HistoryContext } from './context/HistoryContext';
+import { CalculatorContext } from './context/CalculatorContext';
 export function App() {
-  const [expression, setExpression] = useState('');
-  const [result, setResult] = useState(0);
-  const [ans, setAns] = useState(0);
-  const [completeOperation, setcompleteOperation] = useState(false);
+    const {
+    expression,
+    result,
+    ans,
+    completeOperation,
+    open,
+    setters: {
+      setExpression,
+      setResult,
+      setAns,
+      setcompleteOperation,
+      setOpen,
+    }
+  } = useContext(CalculatorContext);
 
-  const [open, setOpen] = useState(0); // count open parentheses
-  const [mode, setMode] = useState('Standar');
-  const [history, setHistory] = useState([]);
+
+
+const { setHistory } = useContext(HistoryContext);
+
+
+
   const buttons = {
     basic: [
       { icon: 'C', action: clearScreen },
@@ -173,16 +188,6 @@ function deleteCharScreen() {
     }
   }
 
-  function updateScreenFromHistory(value) {
-    clearScreen();
-    setExpression(value);
-  }
-
-  function changeMode(value) {
-    setMode(value);
-  }
-
-
   // update ans value if the result is correct
   useEffect(() => {
     if (!['Syntax Error'].includes(result)) {
@@ -192,22 +197,11 @@ function deleteCharScreen() {
   
   return (
     <>
-      <Screen
-        updateScreenFromHistory={updateScreenFromHistory}
-        history={history}
-        expression={expression}
-        result={result}
-        ans={ans}
-        changeMode={changeMode}
-        mode={mode}
-        open={open}
-        completeOperation={completeOperation}
-      />
+      <Screen/>
       <div className="flex justify-center">
         <CalculatorButtons
           basicButtons={buttons.basic}
           scientificButtons={buttons.scientific}
-          mode={mode}
         />
       </div>
     </>

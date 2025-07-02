@@ -1,16 +1,35 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { faClockRotateLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// Context
+import { HistoryContext } from '../context/HistoryContext';
+import { CalculatorContext } from '../context/CalculatorContext';
 
-export function History({ history, updateScreenFromHistory }) {
-  const [Open, setOpen] = useState(false);
+export function History() {
+  const [openMenu, setOpenMenu] = useState(false);
+const { history } = useContext(HistoryContext);
 
+     const {
+    setters: {
+      setExpression,
+      setResult,
+      setcompleteOperation,
+      setOpen,
+    }
+  } = useContext(CalculatorContext);
+
+ function updateScreenFromHistory(value) {
+    setcompleteOperation(false);
+    setResult(0);
+    setOpen(0);
+    setExpression(value);
+  }
   return (
     <>
       <div className="flex justify-end items-center relative">
         <FontAwesomeIcon
           icon={faClockRotateLeft}
-          onClick={() => setOpen(!Open)}
+          onClick={() => setOpenMenu(!openMenu)}
           className={`
             transition-all 
             duration-200 
@@ -18,7 +37,7 @@ export function History({ history, updateScreenFromHistory }) {
             hover:scale-[1.02] 
             hover:text-[#186064] 
             hover:cursor-pointer
-            ${Open ? 'text-[#186064]' : 'text-white'}
+            ${openMenu ? 'text-[#186064]' : 'text-white'}
           `}
         />
         <div        
@@ -36,7 +55,7 @@ export function History({ history, updateScreenFromHistory }) {
             transition-all 
             duration-300 
             ease-in-out 
-            ${Open ? 'translate-x-[7.2vw] opacity-100' : 'opacity-0 translate-x-full'}
+            ${openMenu ? 'translate-x-[7.2vw] opacity-100' : 'opacity-0 translate-x-full'}
           `}
         >
           <p className="p-2 sticky top-0 bg-[#0b0c0c] z-10 text-[.6vw]">

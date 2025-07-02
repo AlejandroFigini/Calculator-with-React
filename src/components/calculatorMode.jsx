@@ -1,8 +1,14 @@
 import { faBars, faCalculator, faFlask, faChevronDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 
-export function CalculatorMode({ changeMode, mode }) {
+// Context
+import { ModeContext } from '../context/ModeContext';
+
+export function CalculatorMode({  }) {
+  const { mode, setMode } = useContext(ModeContext);
+
+  
   const [showMenu, setShowMenu] = useState(false);
 
   return (
@@ -32,7 +38,7 @@ export function CalculatorMode({ changeMode, mode }) {
               className='cursor-pointer text-[#999da9] font-light'
               onClick={(e) => {
                 e.stopPropagation(); // prevent menu reopening
-                changeMode('Standar');
+                setMode('Standar');
                 setShowMenu(false); // close menu
               }}
             >
@@ -44,7 +50,7 @@ export function CalculatorMode({ changeMode, mode }) {
               className='cursor-pointer text-[#999da9] font-light'
               onClick={(e) => {
                 e.stopPropagation();
-                changeMode('Scientific');
+                setMode('Scientific');
                 setShowMenu(false);
               }}
             >

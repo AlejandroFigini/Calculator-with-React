@@ -1,6 +1,10 @@
 import { Button } from './Button';
+import { useContext } from 'react';
+// Context
+import { ModeContext } from '../context/ModeContext';
+export function CalculatorButtons({ basicButtons, scientificButtons }) {
 
-export function CalculatorButtons({ basicButtons, scientificButtons, mode }) {
+const { mode } = useContext(ModeContext);
   return (
     <>
       <div

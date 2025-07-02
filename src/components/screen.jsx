@@ -1,15 +1,25 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useContext  } from 'react';
 import { motion } from 'framer-motion';
 
 import { History } from './History';
 import { CalculatorMode } from './CalculatorMode';
 import { BlinkingCurson } from './BlinkingCursor';
+import { CalculatorContext } from '../context/CalculatorContext';
 
-export function Screen({ expression, result, ans, changeMode, mode, history, updateScreenFromHistory, open, completeOperation }) {
+
+export function Screen() {
+
+     const {
+    expression,
+    result,
+    ans,
+    completeOperation,
+    open,
+  } = useContext(CalculatorContext);
+
   const inputRef = useRef(null);
   const [displayUp, setdisplayUp] = useState('Ans = ' + ans)
   const [displayDown,setdisplayDown] = useState(expression);
-
 
 
 
@@ -51,10 +61,10 @@ export function Screen({ expression, result, ans, changeMode, mode, history, upd
   return (
     <>
       <div
-        className={`col-span-2 row-start-1 row-end-2 bg-black rounded-[0.5vw] grid grid-cols-1 [grid-template-rows:2vw_auto] gap-[1vw] p-[0.7vw] transition-all duration-200 ${mode === 'Scientific' ? 'w-[24vw]' : 'w-[12vw]'}`}
+        className={`col-span-2 row-start-1 row-end-2 bg-black rounded-[0.5vw] grid grid-cols-1 [grid-template-rows:2vw_auto] gap-[1vw] p-[0.7vw] transition-all duration-200 '}`}
       >
-        <CalculatorMode changeMode={changeMode} mode={mode} />
-        <History updateScreenFromHistory={updateScreenFromHistory} history={history} />
+        <CalculatorMode />
+        <History />
         <div
           ref={inputRef}
           className="
