@@ -19,7 +19,8 @@ Interactive calculator built with **React**, featuring both Standard and Scienti
 - **React Context API** for state management across components  
 - **Framer Motion** for smooth animations  
 - **FontAwesome** for icons  
-- **mathjs** for expression evaluation  
+- **mathjs** for expression evaluation
+- **Tailwind CSS** for styling  
 
 ---
 
