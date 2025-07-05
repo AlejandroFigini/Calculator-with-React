@@ -27,8 +27,7 @@ Interactive calculator built with **React**, featuring both Standard and Scienti
 
 - https://alejandrofigini.github.io/React-Scientific-Calculator/
 
+![React Calculator](React%20calculator.png)
 
-
-![ReactCalculator](React calculator.png)
 
   
