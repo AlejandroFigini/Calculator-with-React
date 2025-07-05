@@ -100,7 +100,6 @@ export function App() {
       // Start a new operation keeping the last result
       if (completeOperation) {
         setcompleteOperation(false);
-        setOpen(0);
         return ans + formattedValue;
       }
 
