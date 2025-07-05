@@ -6,7 +6,7 @@ export function BlinkingCurson({ completeOperation }) {
   return (
     <motion.span
       animate={{
-        opacity: [1, 0, 1]
+        opacity: [1, 0, 1],
       }}
       transition={{ duration: 1, repeat: Infinity }}
     >

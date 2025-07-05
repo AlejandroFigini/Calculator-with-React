@@ -2,13 +2,12 @@ import { createContext, useState } from "react";
 
 export const HistoryContext = createContext();
 
+export function HistoryProvider({ children }) {
+  const [history, setHistory] = useState([]);
 
-export function HistoryProvider({ children }){
-    const [history, setHistory] = useState([]);
-return(
+  return (
     <HistoryContext.Provider value={{ history, setHistory }}>
-        { children }
+      {children}
     </HistoryContext.Provider>
-)
+  );
 }
-

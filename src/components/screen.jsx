@@ -1,15 +1,14 @@
-import { useRef, useState, useEffect, useContext  } from 'react';
+import { useRef, useState, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
-
+// Components
 import { History } from './History';
 import { CalculatorMode } from './CalculatorMode';
 import { BlinkingCurson } from './BlinkingCursor';
+// Context
 import { CalculatorContext } from '../context/CalculatorContext';
 
-
 export function Screen() {
-
-     const {
+  const {
     expression,
     result,
     ans,
@@ -18,35 +17,32 @@ export function Screen() {
   } = useContext(CalculatorContext);
 
   const inputRef = useRef(null);
-  const [displayUp, setdisplayUp] = useState('Ans = ' + ans)
-  const [displayDown,setdisplayDown] = useState(expression);
-
-
+  const [displayUp, setdisplayUp] = useState('Ans = ' + ans);
+  const [displayDown, setdisplayDown] = useState(expression);
 
   useEffect(() => {
-  setdisplayUp(completeOperation ? result : 'Ans = ' + ans);
-}, [completeOperation]);
+    setdisplayUp(completeOperation ? result : 'Ans = ' + ans);
+  }, [completeOperation]);
 
-  
-// Put blinking cursor inside parentheses
+  // Put blinking cursor inside parentheses
   useEffect(() => {
     const index = expression.length - open;
     setdisplayDown(
-    <>
-      {open > 0 ? (
-        <>
-          {expression.slice(0, index)}
-          <BlinkingCurson completeOperation={completeOperation} />
-          <span style={{ color: '#696464' }}>{expression.slice(index)}</span>
-        </>
-      ) : (
-        <>
-          {expression}
-          <BlinkingCurson completeOperation={completeOperation} />
-        </>
-      )}
-    </>
-  );
+      <>
+        {open > 0 ? (
+          <>
+            {expression.slice(0, index)}
+            <BlinkingCurson completeOperation={completeOperation} />
+            <span style={{ color: '#696464' }}>{expression.slice(index)}</span>
+          </>
+        ) : (
+          <>
+            {expression}
+            <BlinkingCurson completeOperation={completeOperation} />
+          </>
+        )}
+      </>
+    );
   }, [expression, open]);
 
   // Automatically move to the end of the expression

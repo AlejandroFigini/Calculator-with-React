@@ -1,14 +1,15 @@
 import { useEffect, useContext } from 'react';
 import { evaluate } from 'mathjs';
-
 // Components
 import { Screen } from './components/Screen';
 import { CalculatorButtons } from './components/CalculatorButtons';
-// Context
+// Contexts
 import { HistoryContext } from './context/HistoryContext';
 import { CalculatorContext } from './context/CalculatorContext';
+
 export function App() {
-    const {
+  const { setHistory } = useContext(HistoryContext);
+  const {
     expression,
     result,
     ans,
@@ -20,14 +21,8 @@ export function App() {
       setAns,
       setcompleteOperation,
       setOpen,
-    }
+    },
   } = useContext(CalculatorContext);
-
-
-
-const { setHistory } = useContext(HistoryContext);
-
-
 
   const buttons = {
     basic: [
@@ -49,7 +44,7 @@ const { setHistory } = useContext(HistoryContext);
       { icon: 'x', action: updateScreen },
       { icon: '0', action: updateScreen },
       { icon: '.', action: updateScreen },
-      { icon: '=', action: calculateResult }
+      { icon: '=', action: calculateResult },
     ],
     scientific: [
       { icon: 'e', action: updateScreen },
@@ -66,8 +61,8 @@ const { setHistory } = useContext(HistoryContext);
       { icon: 'sen', operator: 'sin()', action: IncreaseParentheses },
       { icon: 'tan', operator: 'tan()', action: IncreaseParentheses },
       { icon: 'x!', operator: '!', action: updateScreen },
-      { icon: '^', operator: '^()', action: IncreaseParentheses }
-    ]
+      { icon: '^', operator: '^()', action: IncreaseParentheses },
+    ],
   };
 
   // Button functions
@@ -88,82 +83,80 @@ const { setHistory } = useContext(HistoryContext);
   }
 
   function updateScreen(value) {
-  setExpression((prev) => {
-    let formattedValue = value;
+    setExpression((prev) => {
+      let formattedValue = value;
 
-    // add space if the input is a symbol
-    if (/^[^0-9.]$/.test(value)) {
-      formattedValue = ` ${value} `; 
-    }
+      // add space if the input is a symbol
+      if (/^[^0-9.]$/.test(value)) {
+        formattedValue = ` ${value} `;
+      }
 
-    // always show = in the end of the expression
-    if (value === '=') { 
-      setOpen(0);
+      // always show = in the end of the expression
+      if (value === '=') {
+        setOpen(0);
+        return prev + formattedValue;
+      }
+
+      // Start a new operation keeping the last result
+      if (completeOperation) {
+        setcompleteOperation(false);
+        setOpen(0);
+        return ans + formattedValue;
+      }
+
+      // Only update the parentheses counter
+      if (value === ')') {
+        return prev;
+      }
+
+      // Determine the position of the input based on open parentheses
+      if (open > 0) {
+        return prev.slice(0, -open) + formattedValue + prev.slice(-open);
+      }
+
       return prev + formattedValue;
-    }
+    });
+  }
 
-    // Start a new operation keeping the last result
-    if (completeOperation) { 
-      setcompleteOperation(false);
-      setOpen(0);
-      return ans + formattedValue;
-    }
+  function deleteCharScreen() {
+    setExpression((prev) => {
+      const emptyFuncOrParenRegex = /(log|ln|cos|sen|tan|√|Rnd|abs)?\(\)/g;
+      const match = prev.match(/(\)+)$/);
+      const count = match ? match[0].length : 0;
 
-    // Only update the parentheses counter
-    if (value === ')') { 
-      return prev;
-    }
-
-    // Determine the position of the input based on open parentheses
-    if (open > 0) { 
-      return (
-        prev.slice(0, -open) + formattedValue + prev.slice(-open)
-      );
-    }
-
-    return prev + formattedValue;
-  });
-}
-
-
-function deleteCharScreen() {
-  setExpression((prev) => {
-    const emptyFuncOrParenRegex = /(log|ln|cos|sen|tan|√|Rnd|abs)?\(\)/g;
-    const match = prev.match(/(\)+)$/);
-    const count = match ? match[0].length : 0;
-
-    function EmptyFuncOrParen() {
-      setOpen((prevOpen) => prevOpen - 1);
-      return prev.replace(emptyFuncOrParenRegex, '');
-    }
-
-    function InsideParentheses() {
-      if (prev.slice(0, -count).endsWith(' ')) {
-        return prev.slice(0, -count - 3) + prev.slice(-count);
+      function EmptyFuncOrParen() {
+        setOpen((prevOpen) => prevOpen - 1);
+        return prev.replace(emptyFuncOrParenRegex, '');
       }
-      return prev.slice(0, -count - 1) + prev.slice(-count);
-    }
 
-    function OutsideParentheses() {
-      if (prev.endsWith(' ')) {
-        return prev.slice(0, -3);
+      function InsideParentheses() {
+        if (prev.slice(0, -count).endsWith(' ')) {
+          return prev.slice(0, -count - 3) + prev.slice(-count);
+        }
+        return prev.slice(0, -count - 1) + prev.slice(-count);
       }
-      return prev.slice(0, -1);
-    }
 
-     // delete empty parentheses or functions
-    if (emptyFuncOrParenRegex.test(prev)) {
-      return EmptyFuncOrParen();
-    }
-    // inside parentheses
-    if (count > 0) {
-      return InsideParentheses();
-    }
-    // outside parentheses, default return
-    return OutsideParentheses();
-  });
-}
+      function OutsideParentheses() {
+        if (prev.endsWith(' ')) {
+          return prev.slice(0, -3);
+        }
+        return prev.slice(0, -1);
+      }
 
+      // delete empty parentheses or functions
+      if (emptyFuncOrParenRegex.test(prev)) {
+        return EmptyFuncOrParen();
+      }
+
+      // inside parentheses
+      if (count > 0) {
+        return InsideParentheses();
+      }
+
+      // outside parentheses, default return
+      return OutsideParentheses();
+    });
+  }
 
   function parseExpression(value) {
     return value
@@ -194,10 +187,10 @@ function deleteCharScreen() {
       setAns(result);
     }
   }, [result]);
-  
+
   return (
     <>
-      <Screen/>
+      <Screen />
       <div className="flex justify-center">
         <CalculatorButtons
           basicButtons={buttons.basic}

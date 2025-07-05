@@ -5,17 +5,18 @@ import { useState, useContext } from 'react';
 // Context
 import { ModeContext } from '../context/ModeContext';
 
-export function CalculatorMode({  }) {
+export function CalculatorMode() {
   const { mode, setMode } = useContext(ModeContext);
 
-  
   const [showMenu, setShowMenu] = useState(false);
 
   return (
     <div className='flex justify-start items-center'>
       <ul>
         <li
-          className={`relative cursor-pointer font-light ${showMenu ? 'text-[rgb(36, 48, 48)]' : 'text-white'}`}
+          className={`relative cursor-pointer font-light ${
+            showMenu ? 'text-[rgb(36, 48, 48)]' : 'text-white'
+          }`}
           onClick={() => setShowMenu((prev) => !prev)} // open menu
         >
           <span>
@@ -38,12 +39,12 @@ export function CalculatorMode({  }) {
               className='cursor-pointer text-[#999da9] font-light'
               onClick={(e) => {
                 e.stopPropagation(); // prevent menu reopening
-                setMode('Standar');
+                setMode('Standard');
                 setShowMenu(false); // close menu
               }}
             >
               <span>
-                <FontAwesomeIcon icon={faCalculator} /> Standar
+                <FontAwesomeIcon icon={faCalculator} /> Standard
               </span>
             </li>
             <li
