@@ -45,8 +45,8 @@ export function History() {
           className={`
             absolute 
             bg-[#0b0c0c]       
-            top-[-0.3vw] 
-            left-[-5.5vw] 
+            top-[-0.vw] 
+            left-[-5.2vw] 
             [scrollbar-width:none] 
             max-h-[7vw]	
             w-[8vw] 
@@ -59,7 +59,7 @@ export function History() {
             ${openMenu ? 'translate-x-[7.2vw] opacity-100' : 'opacity-0 translate-x-full'}
           `}
         >
-          <p className="p-2 sticky top-0 bg-[#0b0c0c] z-10 text-[.6vw]">
+          <p className="p-2 sticky top-0 bg-[#0b0c0c] z-10 text-[.7vw]">
             {history.length} operation{history.length !== 1 ? 's' : ''}
           </p>
 
@@ -72,6 +72,7 @@ export function History() {
                 ease-in-out 
                 px-[0.5vw] 
                 py-[0.3vw]
+                text-[.7vw]
                 hover:bg-[#186064] 
                 hover:cursor-pointer 
                 hover:scale-[1.03] 
